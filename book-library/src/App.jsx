@@ -1,15 +1,18 @@
+import { useState } from "react";
 import SearchBar from "./components/SearchBar";
 
 function App() {
-  const searchBooks = async (query) => {
-    console.log("Searching for:", query);
+  const [books, setBooks] = useState([]);
 
+  const searchBooks = async (query) => {
     try {
-      const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+      const response = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=${query}`
+      );
       const data = await response.json();
-      console.log("API response:", data);
+      setBooks(data.items || []);
     } catch (error) {
-      console.error('Error fetching books:', error);
+      console.error("Error fetching books:", error);
     }
   };
 
@@ -18,10 +21,38 @@ function App() {
       <h1 className="text-4xl font-bold text-center text-blue-600">
         Book Library
       </h1>
+
       <SearchBar onSearch={searchBooks} />
 
-      <div>
-        Open the console to see search results
+      {/* BOOK RESULTS GRID */}
+      <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {books.map((book) => {
+          const info = book.volumeInfo;
+
+          return (
+            <div
+              key={book.id}
+              className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
+            >
+              <img
+                src={
+                  info.imageLinks?.thumbnail ||
+                  "https://via.placeholder.com/150x220?text=No+Cover"
+                }
+                alt={info.title}
+                className="w-full h-56 object-cover mb-4 rounded"
+              />
+
+              <h2 className="font-semibold text-lg mb-1">
+                {info.title}
+              </h2>
+
+              <p className="text-sm text-gray-600">
+                {info.authors?.join(", ") || "Unknown Author"}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
