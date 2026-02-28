@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SearchBar from "./components/SearchBar";
+import BookModal from "./components/BookModal";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -37,6 +38,7 @@ function App() {
       </h1>
 
       <SearchBar onSearch={searchBooks} />
+      <BookModal book={selectedBook} onClose={() => setSelectedBook(null)} />
 
       {!hasSearched && (
         <p className="text-center mt-6 text-gray-500">
@@ -64,7 +66,7 @@ function App() {
             <div
               key={book.id}
               onClick={() => setSelectedBook(book)}
-              className="bg-white p-4 rounded-lg shadow hover:shadow-lg cursor-pointer transition"
+              className="bg-white p-4 rounded-lg shadow hover:shadow-lg hover:scale-105 cursor-pointer transition transform"
             >
               <img
                 src={
