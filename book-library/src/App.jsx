@@ -19,7 +19,7 @@ function App() {
 
       const data = await response.json();
 
-      console.log("BOOKS API RESPONSE 👉", data); // 👈 ADD THIS
+      console.log("BOOKS API RESPONSE ", data);
 
       setBooks(data.items || []);
       setHasSearched(true);
