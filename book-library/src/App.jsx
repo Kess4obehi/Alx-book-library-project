@@ -4,8 +4,10 @@ import SearchBar from "./components/SearchBar";
 function App() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const searchBooks = async (query) => {
+    setHasSearched(true);
     setLoading(true);
 
     try {
@@ -16,7 +18,6 @@ function App() {
       setBooks(data.items || []);
     } catch (error) {
       console.error("Error fetching books:", error);
-      setBooks([]);
     } finally {
       setLoading(false);
     }
@@ -29,19 +30,25 @@ function App() {
       </h1>
 
       <SearchBar onSearch={searchBooks} />
+
+      {!hasSearched && (
+        <p className="text-center mt-6 text-gray-500">
+          Search for a book to see results
+        </p>
+      )}
+
       {loading && (
         <p className="text-center mt-6 text-gray-600 text-lg">
           Loading books...
         </p>
       )}
 
-      {!loading && books.length === 0 && (
+      {hasSearched && !loading && books.length === 0 && (
         <p className="text-center mt-6 text-gray-500">
           No books found. Try another search.
         </p>
       )}
 
-      {/* BOOK RESULTS GRID */}
       <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {books.map((book) => {
           const info = book.volumeInfo;
