@@ -5,19 +5,26 @@ function App() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
 
   const searchBooks = async (query) => {
-    setHasSearched(true);
     setLoading(true);
+    setHasSearched(false);
 
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${import.meta.env.VITE_GOOGLE_BOOKS_KEY}`
       );
-      const data = await response.json();
+            const data = await response.json();
+
+      console.log("BOOKS API RESPONSE 👉", data); // 👈 ADD THIS
+
       setBooks(data.items || []);
+      setHasSearched(true);
     } catch (error) {
       console.error("Error fetching books:", error);
+      setBooks([]);
+      setHasSearched(true);
     } finally {
       setLoading(false);
     }
@@ -56,7 +63,8 @@ function App() {
           return (
             <div
               key={book.id}
-              className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
+              onClick={() => setSelectedBook(book)}
+              className="bg-white p-4 rounded-lg shadow hover:shadow-lg cursor-pointer transition"
             >
               <img
                 src={
